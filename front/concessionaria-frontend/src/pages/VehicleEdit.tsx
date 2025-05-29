@@ -50,10 +50,10 @@ export default function VehicleEdit() {
     try {
       const vehicle = await vehicleService.getVehicle(id!);
       setForm({
-        model: vehicle.modelo,
-        year: vehicle.ano,
-        basePrice: vehicle.preco,
-        color: vehicle.cor,
+        model: vehicle.model,
+        year: vehicle.year,
+        basePrice: vehicle.basePrice,
+        color: vehicle.color,
       });
     } catch (error) {
       setError("Erro ao carregar dados do veículo");
@@ -78,10 +78,10 @@ export default function VehicleEdit() {
 
     try {
       const vehicleData = {
-        modelo: form.model,
-        ano: form.year,
+        model: form.model,
+        year: form.year,
         basePrice: form.basePrice,
-        cor: form.color,
+        color: form.color,
         available: true,
       };
 

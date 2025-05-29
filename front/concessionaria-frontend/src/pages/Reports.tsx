@@ -61,7 +61,7 @@ export default function Reports() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (user?.perfil !== "VENDEDOR") {
+    if (user?.profile !== "VENDEDOR") {
       setError("Acesso negado. Apenas vendedores podem acessar relatórios.");
       setLoading(false);
       return;
@@ -79,8 +79,8 @@ export default function Reports() {
       ]);
 
       // Processar dados para o relatório
-      const availableVehicles = vehiclesData.filter((v: any) => v.disponivel);
-      const soldVehicles = vehiclesData.filter((v: any) => !v.disponivel);
+      const availableVehicles = vehiclesData.filter((v: any) => v.available);
+      const soldVehicles = vehiclesData.filter((v: any) => !v.available);
 
       // Calcular receita total (simulado)
       const totalRevenue = salesData.reduce((sum: number, sale: any) => {
@@ -127,7 +127,7 @@ export default function Reports() {
 
   const generateTopVehiclesData = (vehicles: any[]) => {
     return vehicles.slice(0, 5).map((vehicle) => ({
-      modelo: vehicle.modelo,
+      modelo: vehicle.model,
       sales: Math.floor(Math.random() * 10) + 1,
     }));
   };
@@ -137,11 +137,11 @@ export default function Reports() {
       const vehicle = vehicles[index % vehicles.length];
       return {
         id: sale.id || `sale_${index}`,
-        vehicleModel: vehicle?.modelo || "Modelo não encontrado",
+        vehicleModel: vehicle?.model || "Modelo não encontrado",
         date: new Date(
           Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
         ).toLocaleDateString("pt-BR"),
-        price: vehicle?.preco || Math.floor(Math.random() * 100000) + 30000,
+        price: vehicle?.basePrice || Math.floor(Math.random() * 100000) + 30000,
         client: `Cliente ${index + 1}`,
       };
     });

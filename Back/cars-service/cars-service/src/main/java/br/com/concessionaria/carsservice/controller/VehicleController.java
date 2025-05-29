@@ -41,4 +41,30 @@ public class VehicleController {
     public Vehicle create(@RequestBody Vehicle vehicle) {
         return vehicleService.save(vehicle);
     }
+
+    // Atualiza um veículo existente
+    @PutMapping("/{id}")
+    public ResponseEntity<Vehicle> update(@PathVariable Long id, @RequestBody Vehicle vehicle) {
+        Optional<Vehicle> existingVehicle = vehicleService.findById(id);
+        if (existingVehicle.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        // Define o ID do veículo para garantir que será uma atualização
+        vehicle.setId(id);
+        Vehicle updatedVehicle = vehicleService.save(vehicle);
+        return ResponseEntity.ok(updatedVehicle);
+    }
+
+    // Remove um veículo
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        Optional<Vehicle> existingVehicle = vehicleService.findById(id);
+        if (existingVehicle.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        vehicleService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

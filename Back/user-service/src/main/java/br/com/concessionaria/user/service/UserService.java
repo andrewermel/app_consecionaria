@@ -29,8 +29,18 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+    // Busca um usuário pelo documento (CPF)
+    public Optional<User> findByDocument(String document) {
+        return userRepository.findByDocument(document);
+    }
+
     // Salva um novo usuário
     public User save(User user) {
         return userRepository.save(user);
+    }
+
+    // Remove um usuário pelo ID
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
     }
 }

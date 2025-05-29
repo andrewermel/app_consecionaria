@@ -19,10 +19,10 @@ import {
 
 interface Vehicle {
   id: string;
-  ano: number;
-  preco: number;
-  cor: "branca" | "prata" | "preta";
-  modelo: string;
+  year: number;
+  basePrice: number;
+  color: "branca" | "prata" | "preta";
+  model: string;
   available: boolean;
 }
 
@@ -62,12 +62,12 @@ function Home() {
     let filtered = vehicles;
 
     if (colorFilter) {
-      filtered = filtered.filter((vehicle) => vehicle.cor === colorFilter);
+      filtered = filtered.filter((vehicle) => vehicle.color === colorFilter);
     }
 
     if (searchTerm) {
       filtered = filtered.filter((vehicle) =>
-        vehicle.modelo.toLowerCase().includes(searchTerm.toLowerCase())
+        vehicle.model.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -131,7 +131,7 @@ function Home() {
                     }}
                   >
                     <Typography gutterBottom variant="h5" component="div">
-                      {vehicle.modelo}
+                      {vehicle.model}
                     </Typography>
                     <Chip
                       label={vehicle.available ? "Disponível" : "Indisponível"}
@@ -140,13 +140,13 @@ function Home() {
                     />
                   </Box>
                   <Typography variant="body2" color="text.secondary">
-                    Ano: {vehicle.ano}
+                    Ano: {vehicle.year}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Cor: {vehicle.cor}
+                    Cor: {vehicle.color}
                   </Typography>
                   <Typography variant="h6" color="primary" sx={{ mt: 1 }}>
-                    R$ {vehicle.preco.toLocaleString("pt-BR")}
+                    R$ {vehicle.basePrice.toLocaleString("pt-BR")}
                   </Typography>
                 </CardContent>
                 <CardActions>

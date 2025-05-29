@@ -57,18 +57,14 @@ export default function UserEdit() {
   const loadUser = async () => {
     try {
       setLoading(true);
-      // Como não temos um endpoint específico para buscar um usuário,
-      // vamos simular com dados fictícios baseados no CPF
-      // Em uma implementação real, seria: const userData = await userService.getUser(cpf);
-
-      // Simulação de dados do usuário
+      const userData = await userService.getUser(cpf!);
+      // Backend retorna campos em inglês, mapeando para português no frontend
       setFormData({
-        cpf: cpf || "",
-        nome: `Usuário ${cpf}`,
-        login: `user_${cpf?.slice(-4)}`,
-        perfil: "CLIENTE",
+        cpf: userData.document,
+        nome: userData.name,
+        login: userData.username,
+        perfil: userData.profile,
       });
-
       setError("");
     } catch (error) {
       setError("Erro ao carregar dados do usuário");
@@ -96,8 +92,12 @@ export default function UserEdit() {
       setSaving(true);
       setError("");
 
-      // Como não temos endpoint de update, vamos simular o sucesso
-      // Em uma implementação real seria: await userService.updateUser(cpf, formData);
+      await userService.updateUser(cpf!, {
+        name: formData.nome,
+        username: formData.login,
+        profile: formData.perfil,
+        password: formData.senha,
+      });
 
       // Simulação de delay da API
       await new Promise((resolve) => setTimeout(resolve, 1000));

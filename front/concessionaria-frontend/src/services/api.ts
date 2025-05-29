@@ -145,10 +145,10 @@ export const userService = {
   updateUser: async (
     cpf: string,
     userData: {
-      nome?: string;
-      login?: string;
-      perfil?: "VENDEDOR" | "CLIENTE";
-      senha?: string;
+      name?: string;
+      username?: string;
+      profile?: "VENDEDOR" | "CLIENTE";
+      password?: string;
     }
   ) => {
     const response = await api.put(`/users/${cpf}`, userData);

@@ -15,4 +15,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return um Optional contendo o usuário encontrado, ou vazio se nenhum usuário foi encontrado com o username fornecido
      */
     Optional<User> findByUsername(String username);
+
+    /**
+     * Busca um usuário pelo documento (CPF)
+     *
+     * @param document o documento (CPF) do usuário
+     * @return um Optional contendo o usuário encontrado, ou vazio se nenhum usuário foi encontrado com o documento fornecido
+     */
+    Optional<User> findByDocument(String document);
 }

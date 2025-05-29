@@ -29,10 +29,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import PersonIcon from "@mui/icons-material/Person";
 
 interface User {
-  cpf: string;
-  nome: string;
-  login: string;
-  perfil: "VENDEDOR" | "CLIENTE";
+  document: string; // CPF do usuário (vem do backend como "document")
+  name: string; // Nome do usuário (vem do backend como "name")
+  username: string; // Login do usuário (vem do backend como "username")
+  profile: "VENDEDOR" | "CLIENTE"; // Perfil do usuário (vem do backend como "profile")
 }
 
 function UserList() {
@@ -56,6 +56,7 @@ function UserList() {
     try {
       setLoading(true);
       const data = await userService.listUsers();
+      console.log("Users from backend:", data); // Debug log
       setUsers(data);
       setError("");
     } catch (error) {
@@ -74,22 +75,23 @@ function UserList() {
     if (!userToDelete) return;
 
     try {
-      // await userService.deleteUser(userToDelete.cpf);
-      // Por enquanto, apenas remove da lista local
-      setUsers(users.filter((u) => u.cpf !== userToDelete.cpf));
+      console.log("Deleting user:", userToDelete.document); // Debug log
+      await userService.deleteUser(userToDelete.document);
+      setUsers(users.filter((u) => u.document !== userToDelete.document));
       setDeleteDialogOpen(false);
       setUserToDelete(null);
     } catch (error) {
+      console.error("Delete error:", error); // Debug log
       setError("Erro ao excluir usuário");
     }
   };
 
   const handleEditClick = (user: User) => {
-    navigate(`/users/edit/${user.cpf}`);
+    navigate(`/users/edit/${user.document}`);
   };
 
-  const getProfileColor = (perfil: string) => {
-    return perfil === "VENDEDOR" ? "primary" : "secondary";
+  const getProfileColor = (profile: string) => {
+    return profile === "VENDEDOR" ? "primary" : "secondary";
   };
 
   return (
@@ -153,16 +155,16 @@ function UserList() {
                   </TableRow>
                 ) : (
                   users.map((user) => (
-                    <TableRow key={user.cpf} hover>
+                    <TableRow key={user.document} hover>
                       <TableCell sx={{ fontFamily: "monospace" }}>
-                        {user.cpf}
+                        {user.document}
                       </TableCell>
-                      <TableCell>{user.nome}</TableCell>
-                      <TableCell>{user.login}</TableCell>
+                      <TableCell>{user.name}</TableCell>
+                      <TableCell>{user.username}</TableCell>
                       <TableCell>
                         <Chip
-                          label={user.perfil}
-                          color={getProfileColor(user.perfil)}
+                          label={user.profile}
+                          color={getProfileColor(user.profile)}
                           variant="outlined"
                           size="small"
                         />
@@ -209,7 +211,7 @@ function UserList() {
           <DialogTitle>Confirmar Exclusão</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Tem certeza que deseja excluir o usuário "{userToDelete?.nome}"?
+              Tem certeza que deseja excluir o usuário "{userToDelete?.name}"?
               Esta ação não pode ser desfeita.
             </DialogContentText>
           </DialogContent>
