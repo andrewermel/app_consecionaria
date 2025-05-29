@@ -68,7 +68,7 @@ function VehicleDetails() {
     }
 
     try {
-      const cartData = await cartService.addToCart(vehicle.id, user.cpf);
+      const cartData = await cartService.addToCart(vehicle.id, user?.document);
       setSuccess("Veículo adicionado ao carrinho com sucesso!");
       setTimeout(() => setSuccess(""), 3000);
 

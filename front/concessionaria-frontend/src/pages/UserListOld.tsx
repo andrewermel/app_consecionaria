@@ -80,11 +80,11 @@ function UserList() {
             </TableHead>
             <TableBody>
               {users.map((user) => (
-                <TableRow key={user.cpf}>
-                  <TableCell>{user.cpf}</TableCell>
-                  <TableCell>{user.nome}</TableCell>
-                  <TableCell>{user.login}</TableCell>
-                  <TableCell>{user.perfil}</TableCell>
+                <TableRow key={user?.document}>
+                  <TableCell>{user?.document}</TableCell>
+                  <TableCell>{user?.name}</TableCell>
+                  <TableCell>{user?.username}</TableCell>
+                  <TableCell>{user?.profile}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -102,7 +102,7 @@ export default function Home() {
     }
 
     try {
-      const cartData = await cartService.addToCart(vehicleId, user.cpf);
+      const cartData = await cartService.addToCart(vehicleId, user?.document);
       setSuccess("Veículo adicionado ao carrinho!");
       setTimeout(() => setSuccess(""), 3000);
 

@@ -85,7 +85,7 @@ function Cart() {
     }
 
     try {
-      const cartData = await cartService.getActiveCart(user.cpf);
+      const cartData = await cartService.getActiveCart(user?.document);
       if (cartData) {
         setCart(cartData);
         // Se encontrou carrinho ativo, iniciar timer
