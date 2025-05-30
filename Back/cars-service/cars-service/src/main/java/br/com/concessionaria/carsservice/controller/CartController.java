@@ -89,15 +89,15 @@ public class CartController {
         if (cartOpt.isEmpty()) return ResponseEntity.notFound().build();
         Cart cart = cartOpt.get();
         
-        // Validação: tempo máximo de 5 minutos para checkout
-        if (cart.getAddedAt().plusMinutes(5).isBefore(LocalDateTime.now())) {
+        // Validação: tempo máximo de 1 minuto para checkout
+        if (cart.getAddedAt().plusMinutes(1).isBefore(LocalDateTime.now())) {
             // Marca o veículo como disponível novamente quando expira
             Vehicle expiredVehicle = cart.getVehicle();
             expiredVehicle.setAvailable(true);
             vehicleService.save(expiredVehicle);
             
             cartService.deleteById(id);
-            return ResponseEntity.badRequest().body("Tempo de reserva expirado (5 minutos)");
+            return ResponseEntity.badRequest().body("Tempo de reserva expirado (1 minuto)");
         }
         
         // Verifica se o veículo ainda está disponível
@@ -134,8 +134,8 @@ public class CartController {
         int vendidosComSucesso = 0;
         
         for (Cart cart : cartItems) {
-            // Validação: tempo máximo de 5 minutos para checkout
-            if (cart.getAddedAt().plusMinutes(5).isBefore(LocalDateTime.now())) {
+            // Validação: tempo máximo de 1 minuto para checkout
+            if (cart.getAddedAt().plusMinutes(1).isBefore(LocalDateTime.now())) {
                 // Marca o veículo como disponível novamente quando expira
                 Vehicle expiredVehicle = cart.getVehicle();
                 expiredVehicle.setAvailable(true);

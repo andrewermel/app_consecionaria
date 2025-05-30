@@ -38,7 +38,7 @@ function Cart() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [error, setError] = useState("");
   const [seller, setSeller] = useState("");
-  const [timeLeft, setTimeLeft] = useState<number>(300); // 5 minutos
+  const [timeLeft, setTimeLeft] = useState<number>(60); // 1 minuto
 
   useEffect(() => {
     loadActiveCart();
@@ -47,21 +47,47 @@ function Cart() {
     if (user?.perfil === "VENDEDOR" && user?.nome) {
       setSeller(user.nome);
     }
+  }, [user]);
 
-    // Iniciar timer de 5 minutos
+  // Efeito separado para gerenciar o timer baseado nos itens do carrinho
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      setTimeLeft(60);
+      return;
+    }
+
+    // Encontra o item mais antigo no carrinho
+    const oldestItem = cartItems.reduce((oldest, current) => {
+      const oldestTime = new Date(oldest.addedAt).getTime();
+      const currentTime = new Date(current.addedAt).getTime();
+      return currentTime < oldestTime ? current : oldest;
+    });
+
+    // Calcula o tempo restante baseado no item mais antigo
+    const calculateTimeLeft = () => {
+      const addedTime = new Date(oldestItem.addedAt).getTime();
+      const currentTime = new Date().getTime();
+      const elapsedSeconds = Math.floor((currentTime - addedTime) / 1000);
+      const remainingSeconds = 60 - elapsedSeconds; // 1 minuto = 60 segundos
+      return Math.max(0, remainingSeconds);
+    };
+
+    // Define o tempo inicial
+    setTimeLeft(calculateTimeLeft());
+
+    // Iniciar timer que atualiza a cada segundo
     const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          navigate("/");
-          return 0;
-        }
-        return prev - 1;
-      });
+      const remaining = calculateTimeLeft();
+      setTimeLeft(remaining);
+
+      if (remaining <= 0) {
+        clearInterval(timer);
+        navigate("/");
+      }
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [user]);
+  }, [cartItems, navigate]);
 
   const loadActiveCart = async () => {
     if (!user?.cpf) {
