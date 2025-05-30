@@ -61,11 +61,16 @@ export default function Reports() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (user?.profile !== "VENDEDOR") {
+    console.log("User no Reports:", user);
+    console.log("Perfil do usuário:", user?.perfil);
+    // Verificação corrigida: usar 'perfil' em vez de 'profile'
+    if (user?.perfil !== "VENDEDOR") {
+      console.log("Acesso negado - perfil:", user?.perfil);
       setError("Acesso negado. Apenas vendedores podem acessar relatórios.");
       setLoading(false);
       return;
     }
+    console.log("Acesso permitido, carregando dados...");
     loadReportData();
   }, [user]);
 

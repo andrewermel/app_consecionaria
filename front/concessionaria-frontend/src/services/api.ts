@@ -5,7 +5,7 @@ const api = axios.create({
 });
 
 const vehicleApi = axios.create({
-  baseURL: "",
+  baseURL: "/",
 });
 
 // Log de requisições
@@ -24,12 +24,43 @@ api.interceptors.request.use((config) => {
 });
 
 vehicleApi.interceptors.request.use((config) => {
+  console.log("🚗 VehicleApi Request:", {
+    url: config.url,
+    method: config.method,
+    baseURL: config.baseURL,
+  });
+
   const token = localStorage.getItem("token");
+  console.log(
+    "🔑 Token from localStorage:",
+    token ? "Token exists" : "No token found"
+  );
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+    console.log("✅ Authorization header added");
+  } else {
+    console.log("❌ No token - request will fail with 403");
   }
+
   return config;
 });
+
+vehicleApi.interceptors.response.use(
+  (response) => {
+    console.log("✅ VehicleApi Success:", response.status, response.data);
+    return response;
+  },
+  (error) => {
+    console.error("❌ VehicleApi Error:", {
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      url: error.config?.url,
+      hasAuthHeader: !!error.config?.headers?.Authorization,
+    });
+    throw error;
+  }
+);
 
 // Log de respostas
 api.interceptors.response.use(
@@ -164,6 +195,16 @@ export const userService = {
 export const salesService = {
   getAllSales: async () => {
     const response = await vehicleApi.get("/sales");
+    return response.data;
+  },
+
+  createSale: async (saleData: {
+    type: string;
+    client: string;
+    seller: string;
+    vehicleId: number;
+  }) => {
+    const response = await vehicleApi.post("/sales", saleData);
     return response.data;
   },
 };

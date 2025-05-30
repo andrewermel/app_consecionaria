@@ -14,13 +14,22 @@ import {
 } from "@mui/material";
 import { salesService } from "../services/api";
 
+interface Vehicle {
+  id: number;
+  year: number;
+  basePrice: number;
+  color: string;
+  model: string;
+  available: boolean;
+}
+
 interface Sale {
-  id: string;
-  tipo: string;
-  cliente: string;
-  vendedor?: string;
-  veiculo: string;
-  data: string;
+  id: number;
+  type: string;
+  client: string;
+  seller?: string;
+  vehicle: Vehicle;
+  date: string;
 }
 
 export default function Sales() {
@@ -31,9 +40,12 @@ export default function Sales() {
   useEffect(() => {
     async function fetchSales() {
       try {
+        console.log("Tentando buscar vendas...");
         const res = await salesService.getAllSales();
+        console.log("Vendas recebidas:", res);
         setSales(res);
       } catch (err) {
+        console.error("Erro ao buscar vendas:", err);
         setError("Erro ao buscar vendas.");
       } finally {
         setLoading(false);
@@ -59,6 +71,7 @@ export default function Sales() {
                 <TableCell>Cliente</TableCell>
                 <TableCell>Vendedor</TableCell>
                 <TableCell>Veículo</TableCell>
+                <TableCell>Preço</TableCell>
                 <TableCell>Data</TableCell>
               </TableRow>
             </TableHead>
@@ -66,11 +79,23 @@ export default function Sales() {
               {sales.map((sale) => (
                 <TableRow key={sale.id}>
                   <TableCell>{sale.id}</TableCell>
-                  <TableCell>{sale.tipo}</TableCell>
-                  <TableCell>{sale.cliente}</TableCell>
-                  <TableCell>{sale.vendedor || "-"}</TableCell>
-                  <TableCell>{sale.veiculo}</TableCell>
-                  <TableCell>{sale.data}</TableCell>
+                  <TableCell>{sale.type}</TableCell>
+                  <TableCell>{sale.client}</TableCell>
+                  <TableCell>{sale.seller || "-"}</TableCell>
+                  <TableCell>
+                    {sale.vehicle.model} - {sale.vehicle.color} (
+                    {sale.vehicle.year})
+                  </TableCell>
+                  <TableCell>
+                    R${" "}
+                    {sale.vehicle.basePrice.toLocaleString("pt-BR", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(sale.date).toLocaleDateString("pt-BR")}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -6,54 +6,106 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-@Entity // Indica que esta classe é uma entidade JPA
-@Table(name = "users") // Define o nome da tabela no banco de dados
+/**
+ * Entidade que representa um usuário do sistema da concessionária.
+ * Armazena informações pessoais, credenciais de acesso e perfil de permissões.
+ * As senhas são automaticamente criptografadas usando BCrypt para segurança.
+ */
+@Entity // Indica que esta classe é uma entidade JPA (mapeada para uma tabela do banco)
+@Table(name = "users") // Define o nome da tabela no banco de dados como "users"
 @Data // Lombok: gera getters, setters, equals, hashCode e toString automaticamente
-@NoArgsConstructor // Lombok: gera construtor sem argumentos
+@NoArgsConstructor // Lombok: gera construtor sem argumentos (necessário para JPA)
 @AllArgsConstructor // Lombok: gera construtor com todos os argumentos
 public class User {
-    @Id // Chave primária da entidade
+    
+    /**
+     * Identificador único do usuário no sistema.
+     * Gerado automaticamente pelo banco de dados.
+     */
+    @Id // Define como chave primária da entidade
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremento do ID
     private Long id;
 
-    @Column(nullable = false) // Campo obrigatório (documento do usuário, ex: CPF)
+    /**
+     * Documento de identificação do usuário (CPF).
+     * Campo obrigatório e usado para identificar o usuário.
+     */
+    @Column(nullable = false) // Campo obrigatório no banco de dados
     private String document;
 
-    @Column(nullable = false) // Campo obrigatório (nome do usuário)
+    /**
+     * Nome completo do usuário.
+     * Campo obrigatório usado para exibição e identificação.
+     */
+    @Column(nullable = false) // Campo obrigatório no banco de dados
     private String name;
 
-    @Column(nullable = false, unique = true) // Campo obrigatório e único (login do usuário)
+    /**
+     * Email do usuário, usado como login no sistema.
+     * Campo obrigatório e único - cada email pode ter apenas uma conta.
+     */
+    @Column(nullable = false, unique = true) // Campo obrigatório e único no banco
     private String username;
 
-    @Column(nullable = false) // Campo obrigatório (senha do usuário)
+    /**
+     * Senha do usuário criptografada com BCrypt.
+     * A senha é automaticamente criptografada quando definida via setter.
+     */
+    @Column(nullable = false) // Campo obrigatório no banco de dados
     private String password;
 
-    @Enumerated(EnumType.STRING) // Enum armazenado como texto
-    @Column(nullable = false) // Campo obrigatório (perfil do usuário)
+    /**
+     * Perfil de acesso do usuário no sistema.
+     * Define as permissões que o usuário possui (VENDEDOR ou CLIENTE).
+     */
+    @Enumerated(EnumType.STRING) // Enum armazenado como texto no banco
+    @Column(nullable = false) // Campo obrigatório no banco de dados
     private Profile profile;
 
-    // Criptografa e define a senha do usuário
+    /**
+     * Define a senha do usuário com criptografia automática.
+     * A senha é criptografada usando BCrypt antes de ser armazenada.
+     * 
+     * @param password Senha em texto plano a ser criptografada
+     */
     public void setPassword(String password) {
         this.password = BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
-    // Define o documento do usuário (sem criptografia)
+    /**
+     * Define o documento (CPF) do usuário.
+     * 
+     * @param document CPF do usuário
+     */
     public void setDocument(String document) {
         this.document = document;
     }
 
-    // Define o nome do usuário (sem criptografia)
+    /**
+     * Define o nome completo do usuário.
+     * 
+     * @param name Nome completo do usuário
+     */
     public void setName(String name) {
         this.name = name;
     }
 
-    // Define o username do usuário (sem criptografia)
+    /**
+     * Define o email (username) do usuário.
+     * 
+     * @param username Email do usuário usado para login
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
-    // Enum para os perfis de acesso do usuário
+    /**
+     * Enumeration que define os tipos de perfil de acesso do usuário.
+     * VENDEDOR: Possui acesso completo a todas as funcionalidades do sistema
+     * CLIENTE: Possui acesso limitado, apenas para visualizar e comprar veículos
+     */
     public enum Profile {
-        VENDEDOR, CLIENTE
+        VENDEDOR, // Funcionário da concessionária com permissões administrativas
+        CLIENTE   // Cliente que pode visualizar e comprar veículos
     }
 }

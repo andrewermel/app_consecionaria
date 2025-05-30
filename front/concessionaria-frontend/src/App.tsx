@@ -21,6 +21,7 @@ import UserEdit from "./pages/UserEdit";
 import Dashboard from "./pages/Dashboard";
 import Sales from "./pages/Sales";
 import Reports from "./pages/Reports";
+import NewSale from "./pages/NewSale";
 
 function App() {
   return (
@@ -145,6 +146,16 @@ function App() {
               <PrivateRoute>
                 <Sidebar>
                   <Reports />
+                </Sidebar>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/new-sale"
+            element={
+              <PrivateRoute>
+                <Sidebar>
+                  <NewSale />
                 </Sidebar>
               </PrivateRoute>
             }

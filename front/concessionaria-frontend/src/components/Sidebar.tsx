@@ -32,6 +32,7 @@ import {
   Logout as LogoutIcon,
   Add as AddIcon,
   ManageAccounts as ManageAccountsIcon,
+  AddShoppingCart as AddShoppingCartIcon,
 } from "@mui/icons-material";
 
 const drawerWidth = 280;
@@ -58,6 +59,12 @@ const menuItems: MenuItem[] = [
     icon: <ShoppingCartIcon />,
     path: "/cart",
     roles: ["CLIENTE"],
+  },
+  {
+    text: "Nova Venda/Compra",
+    icon: <AddShoppingCartIcon />,
+    path: "/new-sale",
+    roles: ["VENDEDOR", "CLIENTE"],
   },
   {
     text: "Gerenciar Veículos",
@@ -99,6 +106,7 @@ const menuItems: MenuItem[] = [
     text: "Dashboard",
     icon: <DashboardIcon />,
     path: "/dashboard",
+    roles: ["VENDEDOR"],
   },
 ];
 
