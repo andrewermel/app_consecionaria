@@ -41,14 +41,26 @@ public class CartService {
     }
 
     /**
-     * Busca o carrinho ativo de um cliente específico.
-     * Um cliente pode ter apenas um carrinho ativo por vez.
+     * Busca todos os itens do carrinho de um cliente específico.
+     * Um cliente pode ter múltiplos itens em seu carrinho.
      * 
      * @param client Identificação do cliente (CPF, email ou nome)
-     * @return Optional contendo o carrinho ativo do cliente, vazio se não houver
+     * @return Lista com todos os itens do carrinho do cliente
      */
-    public Optional<Cart> findByClient(String client) {
+    public List<Cart> findByClient(String client) {
         return cartRepository.findByClient(client);
+    }
+    
+    /**
+     * Busca um item específico do carrinho por cliente e veículo.
+     * Usado para verificar se um veículo já está no carrinho do cliente.
+     * 
+     * @param client Identificação do cliente
+     * @param vehicleId ID do veículo
+     * @return Optional contendo o item se encontrado, vazio caso contrário
+     */
+    public Optional<Cart> findByClientAndVehicleId(String client, Long vehicleId) {
+        return cartRepository.findByClientAndVehicleId(client, vehicleId);
     }
 
     /**

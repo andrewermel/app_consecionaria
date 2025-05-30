@@ -25,7 +25,7 @@ import PaletteIcon from "@mui/icons-material/Palette";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
 interface Vehicle {
-  id: string;
+  id: number;
   year: number;
   basePrice: number;
   color: string;
@@ -68,7 +68,10 @@ function VehicleDetails() {
     }
 
     try {
-      const cartData = await cartService.addToCart(vehicle.id, user?.document);
+      const cartData = await cartService.addToCart(
+        vehicle.id.toString(),
+        user.cpf
+      );
       setSuccess("Veículo adicionado ao carrinho com sucesso!");
       setTimeout(() => setSuccess(""), 3000);
 
@@ -260,26 +263,31 @@ function VehicleDetails() {
                   flexDirection: { xs: "column", sm: "row" },
                 }}
               >
-                {vehicle.available !== false && user?.perfil === "CLIENTE" && (
+                {vehicle.available !== false &&
+                  (user?.perfil === "CLIENTE" ||
+                    user?.perfil === "VENDEDOR") && (
+                    <Button
+                      variant="contained"
+                      size="large"
+                      startIcon={<ShoppingCartIcon />}
+                      onClick={handleAddToCart}
+                      sx={{ flex: 1 }}
+                    >
+                      Adicionar ao Carrinho
+                    </Button>
+                  )}
+
+                {(user?.perfil === "CLIENTE" ||
+                  user?.perfil === "VENDEDOR") && (
                   <Button
-                    variant="contained"
+                    variant="outlined"
                     size="large"
-                    startIcon={<ShoppingCartIcon />}
-                    onClick={handleAddToCart}
-                    sx={{ flex: 1 }}
+                    onClick={() => navigate("/cart")}
+                    sx={{ flex: { xs: 1, sm: "0 0 auto" } }}
                   >
-                    Adicionar ao Carrinho
+                    Ver Carrinho
                   </Button>
                 )}
-
-                <Button
-                  variant="outlined"
-                  size="large"
-                  onClick={() => navigate("/cart")}
-                  sx={{ flex: { xs: 1, sm: "0 0 auto" } }}
-                >
-                  Ver Carrinho
-                </Button>
               </Box>
             </Paper>
           </Box>

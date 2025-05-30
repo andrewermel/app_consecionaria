@@ -30,7 +30,7 @@ import AddIcon from "@mui/icons-material/Add";
 import FilterListIcon from "@mui/icons-material/FilterList";
 
 interface Vehicle {
-  id: string;
+  id: number;
   model: string;
   year: number;
   basePrice: number;
@@ -95,14 +95,17 @@ export default function Home() {
     setFilteredVehicles(filtered);
   };
 
-  const handleAddToCart = async (vehicleId: string) => {
+  const handleAddToCart = async (vehicleId: number) => {
     if (!user?.cpf) {
       setError("Usuário não autenticado");
       return;
     }
 
     try {
-      const cartData = await cartService.addToCart(vehicleId, user?.document);
+      const cartData = await cartService.addToCart(
+        vehicleId.toString(),
+        user.cpf
+      );
       setSuccess("Veículo adicionado ao carrinho!");
       setTimeout(() => setSuccess(""), 3000);
 
@@ -356,16 +359,18 @@ export default function Home() {
                           Ver Detalhes
                         </Button>
 
-                        {vehicle.available && user?.perfil === "CLIENTE" && (
-                          <Button
-                            variant="contained"
-                            onClick={() => handleAddToCart(vehicle.id)}
-                            startIcon={<ShoppingCartIcon />}
-                            sx={{ flexGrow: 1 }}
-                          >
-                            Adicionar
-                          </Button>
-                        )}
+                        {vehicle.available &&
+                          (user?.perfil === "CLIENTE" ||
+                            user?.perfil === "VENDEDOR") && (
+                            <Button
+                              variant="contained"
+                              onClick={() => handleAddToCart(vehicle.id)}
+                              startIcon={<ShoppingCartIcon />}
+                              sx={{ flexGrow: 1 }}
+                            >
+                              Adicionar
+                            </Button>
+                          )}
                       </Box>
                     </CardContent>
                   </Card>
@@ -385,7 +390,7 @@ export default function Home() {
         )}
 
         {/* Floating Action Button for Cart */}
-        {user?.perfil === "CLIENTE" && (
+        {(user?.perfil === "CLIENTE" || user?.perfil === "VENDEDOR") && (
           <Fab
             color="primary"
             onClick={() => navigate("/cart")}

@@ -149,6 +149,27 @@ export const cartService = {
     const response = await vehicleApi.post(`/cart/${cartId}/cancel`);
     return response.data;
   },
+
+  checkoutAll: async (
+    client: string,
+    seller: string,
+    type: "online" | "fisica",
+    clientType: string = "COMUM"
+  ) => {
+    const response = await vehicleApi.post(
+      `/cart/checkout-all/${client}`,
+      null,
+      {
+        params: { seller, type, clientType },
+      }
+    );
+    return response.data;
+  },
+
+  clearCart: async (client: string) => {
+    const response = await vehicleApi.post(`/cart/clear/${client}`);
+    return response.data;
+  },
 };
 
 export const userService = {

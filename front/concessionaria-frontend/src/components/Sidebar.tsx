@@ -58,7 +58,7 @@ const menuItems: MenuItem[] = [
     text: "Carrinho",
     icon: <ShoppingCartIcon />,
     path: "/cart",
-    roles: ["CLIENTE"],
+    roles: ["CLIENTE", "VENDEDOR"],
   },
   {
     text: "Nova Venda/Compra",

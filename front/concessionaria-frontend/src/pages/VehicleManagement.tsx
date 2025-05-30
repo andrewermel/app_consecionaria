@@ -27,7 +27,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { vehicleService } from "../services/api";
 
 interface Vehicle {
-  id: string;
+  id: number;
   model: string;
   year: number;
   basePrice: number;
@@ -68,7 +68,7 @@ export default function VehicleManagement() {
     }
   };
 
-  const handleEdit = (vehicleId: string) => {
+  const handleEdit = (vehicleId: number) => {
     navigate(`/vehicles/edit/${vehicleId}`);
   };
 
@@ -80,7 +80,7 @@ export default function VehicleManagement() {
     if (!deleteDialog.vehicle) return;
 
     try {
-      await vehicleService.deleteVehicle(deleteDialog.vehicle.id);
+      await vehicleService.deleteVehicle(deleteDialog.vehicle.id.toString());
       setDeleteDialog({ open: false, vehicle: null });
       loadVehicles(); // Recarrega a lista
     } catch (error) {
