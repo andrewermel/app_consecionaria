@@ -69,6 +69,9 @@ export default function NewSale() {
   const pageTitle = isVendor ? "Nova Venda" : "Comprar Veículos";
   const cartButtonText = isVendor ? "Finalizar Venda" : "Finalizar Compra";
 
+  // Para clientes, usa o status VIP do usuário logado; para vendedores, usa o switch
+  const finalVipStatus = isVendor ? isVipClient : user?.vip || false;
+
   useEffect(() => {
     fetchVehicles();
     if (user?.cpf) {
@@ -164,29 +167,21 @@ export default function NewSale() {
     try {
       console.log("🛒 Iniciando checkout...");
 
-      // Para cada item no carrinho, fazemos o checkout
-      for (const item of cartItems) {
-        const clientType = isVipClient ? "VIP" : "COMUM";
+      const clientType = finalVipStatus ? "VIP" : "COMUM";
 
-        // Define seller baseado no perfil do usuário
-        const seller = isVendor ? user.cpf : "vendedor1";
+      // Define seller baseado no perfil do usuário
+      const seller = isVendor ? user.cpf : "vendedor1";
 
-        console.log(`💳 Checkout do carrinho ${item.id}:`, {
-          cartId: item.id,
-          seller: seller,
-          type: "online",
-          clientType: clientType,
-        });
+      console.log(`💳 Checkout de todo o carrinho:`, {
+        client: user.cpf,
+        seller: seller,
+        type: "online",
+        clientType: clientType,
+      });
 
-        await cartService.checkout(
-          item.id.toString(),
-          seller,
-          "online",
-          clientType
-        );
+      await cartService.checkoutAll(user.cpf, seller, "online", clientType);
 
-        console.log(`✅ Checkout concluído para carrinho ${item.id}`);
-      }
+      console.log(`✅ Checkout concluído para todo o carrinho`);
 
       setCartItems([]);
       setCartDialogOpen(false);
@@ -241,9 +236,23 @@ export default function NewSale() {
         alignItems="center"
         mb={3}
       >
-        <Typography variant="h4" component="h1">
-          {pageTitle}
-        </Typography>
+        <Box display="flex" alignItems="center" gap={2}>
+          <Typography variant="h4" component="h1">
+            {pageTitle}
+          </Typography>
+          {user?.vip && !isVendor && (
+            <Chip
+              label="VIP"
+              color="secondary"
+              variant="filled"
+              sx={{
+                backgroundColor: "#ffd700",
+                color: "#000",
+                fontWeight: "bold",
+              }}
+            />
+          )}
+        </Box>
 
         <Button
           variant="contained"
@@ -367,6 +376,20 @@ export default function NewSale() {
                   secondaryTypographyProps={{ variant: "h5", color: "primary" }}
                 />
               </ListItem>
+
+              {finalVipStatus && (
+                <ListItem>
+                  <ListItemText
+                    primary="🌟 Desconto VIP aplicado!"
+                    secondary="10% de desconto será aplicado no checkout"
+                    primaryTypographyProps={{
+                      variant: "body2",
+                      color: "secondary",
+                    }}
+                    secondaryTypographyProps={{ variant: "caption" }}
+                  />
+                </ListItem>
+              )}
 
               {/* Opção Cliente VIP apenas para vendedores */}
               {isVendor && (

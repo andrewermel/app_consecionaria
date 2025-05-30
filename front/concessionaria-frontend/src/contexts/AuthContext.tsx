@@ -3,7 +3,7 @@ import {
   useContext,
   useState,
   useEffect,
-  ReactNode,
+  type ReactNode,
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -20,6 +20,7 @@ interface User {
   nome: string;
   login: string;
   perfil: "VENDEDOR" | "CLIENTE";
+  vip?: boolean;
 }
 
 // Interface para o JWT que vem do backend (ainda em português)
@@ -32,6 +33,7 @@ interface JWTUser {
   username?: string;
   perfil?: "VENDEDOR" | "CLIENTE";
   profile?: "VENDEDOR" | "CLIENTE";
+  vip?: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -50,6 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       nome: jwtData.nome || jwtData.name || "",
       login: jwtData.login || jwtData.username || "",
       perfil: jwtData.perfil || jwtData.profile || "CLIENTE",
+      vip: jwtData.vip || false,
     };
   };
 

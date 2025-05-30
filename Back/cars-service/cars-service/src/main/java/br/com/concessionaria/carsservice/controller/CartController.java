@@ -100,14 +100,10 @@ public class CartController {
             return ResponseEntity.badRequest().body("Tempo de reserva expirado (1 minuto)");
         }
         
-        // Verifica se o veículo ainda está disponível
+        // Se chegou até aqui, o veículo está no carrinho e pode ser vendido
         Vehicle vehicle = cart.getVehicle();
-        if (!vehicle.getAvailable()) {
-            cartService.deleteById(id);
-            return ResponseEntity.badRequest().body("Veículo não está mais disponível");
-        }
         
-        // Marca o veículo como vendido
+        // Marca o veículo como vendido (mantém false para indicar que foi vendido)
         vehicle.setAvailable(false);
         vehicleService.save(vehicle);
         
@@ -145,18 +141,10 @@ public class CartController {
                 continue;
             }
             
-            // Verifica se o veículo ainda está disponível
+            // Se chegou até aqui, o veículo está no carrinho e pode ser vendido
             Vehicle vehicle = cart.getVehicle();
-            if (!vehicle.getAvailable()) {
-                // Marca o veículo como disponível novamente se não está mais disponível
-                vehicle.setAvailable(true);
-                vehicleService.save(vehicle);
-                
-                cartService.deleteById(cart.getId());
-                continue;
-            }
             
-            // Marca o veículo como vendido
+            // Marca o veículo como vendido (mantém false para indicar que foi vendido)
             vehicle.setAvailable(false);
             vehicleService.save(vehicle);
             
