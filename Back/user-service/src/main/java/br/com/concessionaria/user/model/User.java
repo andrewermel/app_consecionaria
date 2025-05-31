@@ -63,6 +63,14 @@ public class User {
     private Profile profile;
 
     /**
+     * Indica se o usuário é um cliente VIP.
+     * Clientes VIP recebem descontos especiais nas compras.
+     * Aplicável apenas para usuários com perfil CLIENTE.
+     */
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean vip = false;
+
+    /**
      * Define a senha do usuário com criptografia automática.
      * A senha é criptografada usando BCrypt antes de ser armazenada.
      * 
@@ -97,6 +105,24 @@ public class User {
      */
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    /**
+     * Define o perfil de acesso do usuário.
+     * 
+     * @param profile Perfil do usuário (VENDEDOR ou CLIENTE)
+     */
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+    /**
+     * Define se o usuário é VIP.
+     * 
+     * @param vip True se o usuário é VIP, false caso contrário
+     */
+    public void setVip(Boolean vip) {
+        this.vip = vip != null ? vip : false;
     }
 
     /**

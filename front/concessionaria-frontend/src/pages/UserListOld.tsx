@@ -14,16 +14,14 @@ import {
   Typography,
   Button,
   Box,
-  AppBar,
-  Toolbar,
   Alert,
 } from "@mui/material";
 
 interface User {
-  cpf: string;
-  nome: string;
-  login: string;
-  perfil: "VENDEDOR" | "CLIENTE";
+  document: string;
+  name: string;
+  username: string;
+  profile: "VENDEDOR" | "CLIENTE";
 }
 
 function UserList() {
@@ -50,15 +48,20 @@ function UserList() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+    <Container maxWidth="lg">
+      <Box sx={{ flexGrow: 1 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 3,
+          }}
+        >
           <Typography variant="h4" component="h1">
             Lista de Usuários
           </Typography>
-          <Button
-            variant="contained"
-            onClick={() => navigate("/users/create")}
-          >
+          <Button variant="contained" onClick={() => navigate("/users/create")}>
             Novo Usuário
           </Button>
         </Box>
@@ -90,8 +93,8 @@ function UserList() {
             </TableBody>
           </Table>
         </TableContainer>
-      </Container>
-    </Box>
+      </Box>
+    </Container>
   );
 }
 

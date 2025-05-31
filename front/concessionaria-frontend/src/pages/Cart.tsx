@@ -16,6 +16,7 @@ import {
   TextField,
   Divider,
   IconButton,
+  Chip,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -118,13 +119,14 @@ function Cart() {
           ? seller
           : user?.nome || user?.login || "Cliente";
       const saleType = user?.perfil === "VENDEDOR" ? "fisica" : "online";
+      const clientType = user?.vip ? "VIP" : "COMUM";
 
       // Usar novo endpoint para checkout de todo o carrinho
       await cartService.checkoutAll(
         user?.cpf || "",
         sellerName,
         saleType,
-        "COMUM"
+        clientType
       );
       navigate("/");
     } catch (error) {
@@ -139,12 +141,13 @@ function Cart() {
           ? seller
           : user?.nome || user?.login || "Cliente";
       const saleType = user?.perfil === "VENDEDOR" ? "fisica" : "online";
+      const clientType = user?.vip ? "VIP" : "COMUM";
 
       await cartService.checkout(
         itemId.toString(),
         sellerName,
         saleType,
-        "COMUM"
+        clientType
       );
 
       // Remove o item da lista local
@@ -181,6 +184,18 @@ function Cart() {
   };
 
   const getTotalPrice = () => {
+    const baseTotal = cartItems.reduce(
+      (total, item) => total + item.vehicle.basePrice,
+      0
+    );
+    // Aplicar desconto VIP se for cliente VIP
+    if (user?.vip) {
+      return baseTotal * 0.9; // 10% de desconto
+    }
+    return baseTotal;
+  };
+
+  const getBaseTotal = () => {
     return cartItems.reduce((total, item) => total + item.vehicle.basePrice, 0);
   };
 
@@ -192,6 +207,14 @@ function Cart() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Carrinho ({cartItems.length}{" "}
             {cartItems.length === 1 ? "item" : "itens"})
+            {user?.vip && (
+              <Chip
+                label="Cliente VIP"
+                color="secondary"
+                size="small"
+                sx={{ ml: 2 }}
+              />
+            )}
           </Typography>
           <Typography variant="subtitle1">
             Tempo restante: {formatTime(timeLeft)}
@@ -301,6 +324,17 @@ function Cart() {
                   <Typography variant="body1">
                     Total de itens: {cartItems.length}
                   </Typography>
+                  {user?.vip && (
+                    <>
+                      <Typography variant="body1" sx={{ mt: 1 }}>
+                        Subtotal: R$ {getBaseTotal().toLocaleString("pt-BR")}
+                      </Typography>
+                      <Typography variant="body1" color="secondary">
+                        Desconto VIP (10%): -R${" "}
+                        {(getBaseTotal() * 0.1).toLocaleString("pt-BR")}
+                      </Typography>
+                    </>
+                  )}
                   <Typography variant="h5" color="primary" sx={{ mt: 1 }}>
                     Total: R$ {getTotalPrice().toLocaleString("pt-BR")}
                   </Typography>

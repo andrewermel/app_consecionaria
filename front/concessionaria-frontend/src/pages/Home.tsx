@@ -4,7 +4,6 @@ import { useAuth } from "../contexts/AuthContext";
 import { vehicleService, cartService } from "../services/api";
 import {
   Container,
-  Grid,
   Card,
   CardContent,
   CardMedia,
@@ -175,8 +174,15 @@ export default function Home() {
             <Typography variant="h6">Filtros</Typography>
           </Box>
 
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={4}>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 2,
+              alignItems: "center",
+            }}
+          >
+            <Box sx={{ flex: "1 1 250px" }}>
               <TextField
                 fullWidth
                 label="Buscar por modelo"
@@ -190,9 +196,9 @@ export default function Home() {
                   ),
                 }}
               />
-            </Grid>
+            </Box>
 
-            <Grid item xs={12} md={3}>
+            <Box sx={{ flex: "1 1 200px" }}>
               <FormControl fullWidth>
                 <InputLabel>Cor</InputLabel>
                 <Select
@@ -208,9 +214,9 @@ export default function Home() {
                   ))}
                 </Select>
               </FormControl>
-            </Grid>
+            </Box>
 
-            <Grid item xs={12} md={3}>
+            <Box sx={{ flex: "1 1 200px" }}>
               <FormControl fullWidth>
                 <InputLabel>Disponibilidade</InputLabel>
                 <Select
@@ -224,9 +230,9 @@ export default function Home() {
                   <MenuItem value="available">Apenas disponíveis</MenuItem>
                 </Select>
               </FormControl>
-            </Grid>
+            </Box>
 
-            <Grid item xs={12} md={2}>
+            <Box sx={{ flex: "0 0 150px" }}>
               <Button
                 fullWidth
                 variant="outlined"
@@ -238,8 +244,8 @@ export default function Home() {
               >
                 Limpar
               </Button>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         </Paper>
 
         {/* Loading */}
@@ -251,9 +257,9 @@ export default function Home() {
 
         {/* Lista de Veículos */}
         {!loading && (
-          <Grid container spacing={3}>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
             {filteredVehicles.length === 0 ? (
-              <Grid item xs={12}>
+              <Box sx={{ width: "100%" }}>
                 <Paper sx={{ p: 4, textAlign: "center" }}>
                   <DirectionsCarIcon
                     sx={{ fontSize: 64, color: "grey.400", mb: 2 }}
@@ -265,10 +271,13 @@ export default function Home() {
                     Tente ajustar os filtros ou adicione novos veículos
                   </Typography>
                 </Paper>
-              </Grid>
+              </Box>
             ) : (
               filteredVehicles.map((vehicle) => (
-                <Grid item xs={12} sm={6} md={4} key={vehicle.id}>
+                <Box
+                  sx={{ flex: "1 1 350px", minWidth: "300px" }}
+                  key={vehicle.id}
+                >
                   <Card
                     sx={{
                       height: "100%",
@@ -374,10 +383,10 @@ export default function Home() {
                       </Box>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Box>
               ))
             )}
-          </Grid>
+          </Box>
         )}
 
         {/* Summary */}

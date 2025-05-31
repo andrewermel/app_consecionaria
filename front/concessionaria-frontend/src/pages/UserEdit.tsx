@@ -15,6 +15,8 @@ import {
   Select,
   MenuItem,
   CircularProgress,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import SaveIcon from "@mui/icons-material/Save";
@@ -26,6 +28,7 @@ interface UserFormData {
   login: string;
   perfil: "VENDEDOR" | "CLIENTE";
   senha?: string;
+  vip: boolean;
 }
 
 export default function UserEdit() {
@@ -37,6 +40,7 @@ export default function UserEdit() {
     nome: "",
     login: "",
     perfil: "CLIENTE",
+    vip: false,
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -64,6 +68,7 @@ export default function UserEdit() {
         nome: userData.name,
         login: userData.username,
         perfil: userData.profile,
+        vip: userData.vip || false,
       });
       setError("");
     } catch (error) {
@@ -74,9 +79,10 @@ export default function UserEdit() {
   };
 
   const handleChange = (field: keyof UserFormData) => (event: any) => {
+    const value = field === "vip" ? event.target.checked : event.target.value;
     setFormData({
       ...formData,
-      [field]: event.target.value,
+      [field]: value,
     });
   };
 
@@ -97,6 +103,7 @@ export default function UserEdit() {
         username: formData.login,
         profile: formData.perfil,
         password: formData.senha,
+        vip: formData.vip,
       });
 
       // Simulação de delay da API
@@ -188,13 +195,32 @@ export default function UserEdit() {
               <InputLabel>Perfil</InputLabel>
               <Select
                 value={formData.perfil}
-                onChange={handleChange("perfil")}
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    perfil: e.target.value as "VENDEDOR" | "CLIENTE",
+                  });
+                }}
                 label="Perfil"
               >
                 <MenuItem value="CLIENTE">Cliente</MenuItem>
                 <MenuItem value="VENDEDOR">Vendedor</MenuItem>
               </Select>
             </FormControl>
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={formData.vip}
+                  onChange={handleChange("vip")}
+                  name="vip"
+                />
+              }
+              label={`${
+                formData.perfil === "CLIENTE" ? "Cliente" : "Vendedor"
+              } VIP (10% de desconto)`}
+              sx={{ mt: 1, mb: 2 }}
+            />
 
             <TextField
               fullWidth

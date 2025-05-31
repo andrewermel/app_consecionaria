@@ -33,6 +33,7 @@ interface User {
   name: string; // Nome do usuário (vem do backend como "name")
   username: string; // Login do usuário (vem do backend como "username")
   profile: "VENDEDOR" | "CLIENTE"; // Perfil do usuário (vem do backend como "profile")
+  vip: boolean; // Status VIP do usuário (vem do backend como "vip")
 }
 
 function UserList() {
@@ -140,6 +141,9 @@ function UserList() {
                   <TableCell sx={{ fontWeight: "bold" }}>Login</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>Perfil</TableCell>
                   <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
+                    VIP
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
                     Ações
                   </TableCell>
                 </TableRow>
@@ -147,7 +151,7 @@ function UserList() {
               <TableBody>
                 {users.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} sx={{ textAlign: "center", py: 4 }}>
+                    <TableCell colSpan={6} sx={{ textAlign: "center", py: 4 }}>
                       <Typography variant="body1" color="text.secondary">
                         Nenhum usuário encontrado
                       </Typography>
@@ -168,6 +172,20 @@ function UserList() {
                           variant="outlined"
                           size="small"
                         />
+                      </TableCell>
+                      <TableCell sx={{ textAlign: "center" }}>
+                        {user.profile === "CLIENTE" ? (
+                          <Chip
+                            label={user.vip ? "VIP" : "Comum"}
+                            color={user.vip ? "warning" : "default"}
+                            variant={user.vip ? "filled" : "outlined"}
+                            size="small"
+                          />
+                        ) : (
+                          <Typography variant="body2" color="text.secondary">
+                            -
+                          </Typography>
+                        )}
                       </TableCell>
                       <TableCell sx={{ textAlign: "center" }}>
                         <Box

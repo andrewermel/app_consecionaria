@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import {
   Container,
-  Grid,
   Paper,
   Typography,
   Box,
@@ -108,49 +107,49 @@ export default function Dashboard() {
           </Alert>
         )}
 
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={3}>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3, mb: 4 }}>
+          <Box sx={{ flex: "1 1 300px", minWidth: "250px" }}>
             <StatCard
               title="Total de Veículos"
               value={stats.totalVehicles}
               icon={<DirectionsCarIcon fontSize="large" />}
               color="primary"
             />
-          </Grid>
+          </Box>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Box sx={{ flex: "1 1 300px", minWidth: "250px" }}>
             <StatCard
               title="Veículos Disponíveis"
               value={stats.availableVehicles}
               icon={<DirectionsCarIcon fontSize="large" />}
               color="success"
             />
-          </Grid>
+          </Box>
 
           {user?.perfil === "VENDEDOR" && (
-            <Grid item xs={12} sm={6} md={3}>
+            <Box sx={{ flex: "1 1 300px", minWidth: "250px" }}>
               <StatCard
                 title="Total de Usuários"
                 value={stats.totalUsers}
                 icon={<PeopleIcon fontSize="large" />}
                 color="secondary"
               />
-            </Grid>
+            </Box>
           )}
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Box sx={{ flex: "1 1 300px", minWidth: "250px" }}>
             <StatCard
               title="Vendas Realizadas"
               value={stats.totalSales}
               icon={<ReceiptIcon fontSize="large" />}
               color="warning"
             />
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
 
         <Box sx={{ mt: 4 }}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
+            <Box sx={{ flex: "1 1 400px" }}>
               <Paper sx={{ p: 3 }}>
                 <Typography variant="h6" gutterBottom>
                   Resumo de Vendas
@@ -175,9 +174,9 @@ export default function Dashboard() {
                   %
                 </Typography>
               </Paper>
-            </Grid>
+            </Box>
 
-            <Grid item xs={12} md={6}>
+            <Box sx={{ flex: "1 1 400px" }}>
               <Paper sx={{ p: 3 }}>
                 <Typography variant="h6" gutterBottom>
                   Estoque de Veículos
@@ -195,8 +194,8 @@ export default function Dashboard() {
                   vendidos ou reservados
                 </Typography>
               </Paper>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         </Box>
       </Box>
     </Container>

@@ -41,7 +41,8 @@ public class UserController {
                         user.getDocument(),  // CPF do usuário
                         user.getName(),      // Nome completo
                         user.getUsername(),  // Email de login
-                        user.getProfile().name() // Perfil (VENDEDOR ou CLIENTE)
+                        user.getProfile().name(), // Perfil (VENDEDOR ou CLIENTE)
+                        user.getVip()        // Status VIP
                 ))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(users);
@@ -64,6 +65,7 @@ public class UserController {
         user.setUsername(request.getUsername());   // Define o email de login
         user.setPassword(request.getPassword());   // Define a senha (será criptografada automaticamente)
         user.setProfile(User.Profile.valueOf(request.getProfile())); // Define o perfil (VENDEDOR ou CLIENTE)
+        user.setVip(request.getVip());             // Define o status VIP
         
         // Salva o usuário no banco de dados
         User saved = userService.save(user);
@@ -73,7 +75,8 @@ public class UserController {
                 saved.getDocument(),
                 saved.getName(),
                 saved.getUsername(),
-                saved.getProfile().name()
+                saved.getProfile().name(),
+                saved.getVip()
         ));
     }
 
@@ -102,7 +105,8 @@ public class UserController {
                 user.getDocument(),
                 user.getName(),
                 user.getUsername(),
-                user.getProfile().name()
+                user.getProfile().name(),
+                user.getVip()
         ));
     }
 
@@ -138,6 +142,9 @@ public class UserController {
         if (request.getPassword() != null) {
             user.setPassword(request.getPassword()); // Atualiza a senha se fornecida
         }
+        if (request.getVip() != null) {
+            user.setVip(request.getVip()); // Atualiza o status VIP se fornecido
+        }
         
         // Salva as alterações no banco de dados
         User updated = userService.save(user);
@@ -145,7 +152,8 @@ public class UserController {
                 updated.getDocument(),
                 updated.getName(),
                 updated.getUsername(),
-                updated.getProfile().name()
+                updated.getProfile().name(),
+                updated.getVip()
         ));
     }
 
@@ -181,6 +189,7 @@ public class UserController {
         private final String name;      // Nome completo
         private final String username;  // Email de login
         private final String profile;   // Perfil (VENDEDOR ou CLIENTE)
+        private final Boolean vip;      // Status VIP
     }
 
     /**
@@ -194,6 +203,7 @@ public class UserController {
         private String username;  // Email de login (obrigatório)
         private String password;  // Senha (obrigatório)
         private String profile;   // Perfil: "VENDEDOR" ou "CLIENTE" (obrigatório)
+        private Boolean vip;      // Status VIP (opcional, padrão false)
     }
 
     /**
@@ -206,5 +216,6 @@ public class UserController {
         private String username;  // Email de login (opcional)
         private String password;  // Nova senha (opcional)
         private String profile;   // Novo perfil: "VENDEDOR" ou "CLIENTE" (opcional)
+        private Boolean vip;      // Status VIP (opcional)
     }
 }

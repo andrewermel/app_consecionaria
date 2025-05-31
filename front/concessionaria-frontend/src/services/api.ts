@@ -189,6 +189,7 @@ export const userService = {
     username: string;
     password: string;
     profile: "VENDEDOR" | "CLIENTE";
+    vip?: boolean;
   }) => {
     const response = await api.post("/users", userData);
     return response.data;
@@ -201,6 +202,7 @@ export const userService = {
       username?: string;
       profile?: "VENDEDOR" | "CLIENTE";
       password?: string;
+      vip?: boolean;
     }
   ) => {
     const response = await api.put(`/users/${cpf}`, userData);
