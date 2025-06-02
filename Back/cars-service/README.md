@@ -1,26 +1,72 @@
-# cars-service
+# Cars Service
 
-Microsserviço Java Spring Boot para gerenciar veículos, vendas e carrinho de uma concessionária.
+Microsserviço responsável pelo gerenciamento de veículos, vendas e carrinho da concessionária.
 
-## Entidades principais
+## 🚗 Funcionalidades
 
-- **Veículo**: id, ano, precoBase, cor, modelo, disponivel (boolean)
-- **Venda**: id, tipo (online/física), cliente, vendedor, veículo, data
-- **Carrinho**: id, veículo, cliente, dataHoraAdicionado
+- **Gerenciamento de Veículos**: CRUD completo de veículos
+- **Sistema de Vendas**: Registro e consulta de vendas
+- **Carrinho de Compras**: Adicionar/remover veículos do carrinho
+- **Relatórios**: Estatísticas de vendas e veículos
 
-## Como rodar
+## 📊 Entidades
 
-1. Configure o banco de dados PostgreSQL no `application.properties`.
-2. Execute: `mvn spring-boot:run`
+### Veículo
 
-## Dependências
+- ID, ano, preço base, cor, modelo, disponibilidade
 
+### Venda
+
+- ID, tipo (online/física), cliente, vendedor, veículo, data
+
+### Carrinho
+
+- ID, veículo, cliente, data/hora adicionado
+
+## 🚀 Como executar
+
+```bash
+# Navegar para o diretório
+cd Back/cars-service/cars-service
+
+# Compilar e executar
+mvn spring-boot:run
+```
+
+## 🔧 Configuração
+
+### application.properties
+
+```properties
+# Banco PostgreSQL
+spring.datasource.url=jdbc:postgresql://localhost:5432/concessionaria
+spring.datasource.username=postgres
+spring.datasource.password=postgres
+
+# Porta do serviço
+server.port=8080
+```
+
+## 🛠️ Dependências principais
+
+- Spring Boot 3.x
 - Spring Web
 - Spring Data JPA
 - PostgreSQL Driver
 - Lombok
 - Spring Boot DevTools
 
----
+## 🔐 Autenticação
 
-Este serviço NÃO implementa autenticação própria. Use o JWT gerado pelo user-service para proteger endpoints futuramente.
+Este serviço **não implementa autenticação própria**. Utiliza JWT gerado pelo user-service para validação de endpoints protegidos.
+
+## 📡 Endpoints principais
+
+- `GET /vehicles` - Listar veículos
+- `POST /vehicles` - Criar veículo
+- `PUT /vehicles/{id}` - Atualizar veículo
+- `DELETE /vehicles/{id}` - Remover veículo
+- `GET /sales` - Consultar vendas
+- `POST /sales` - Registrar venda
+- `GET /cart` - Ver carrinho
+- `POST /cart` - Adicionar ao carrinho

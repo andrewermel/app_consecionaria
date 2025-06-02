@@ -1,54 +1,99 @@
-# React + TypeScript + Vite
+# Concessionária Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interface web moderna para o sistema de concessionária, desenvolvida com React + TypeScript + Vite.
 
-Currently, two official plugins are available:
+## 🎨 Tecnologias
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 19** - Biblioteca UI
+- **TypeScript** - Tipagem estática
+- **Vite** - Build tool e dev server
+- **Material-UI** - Componentes de interface
+- **React Router** - Roteamento
+- **Axios** - Cliente HTTP
+- **Formik + Yup** - Gerenciamento de formulários
 
-## Expanding the ESLint configuration
+## 🚀 Como executar
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# Instalar dependências
+npm install
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+# Executar em modo desenvolvimento
+npm run dev
+
+# Construir para produção
+npm run build
+
+# Prévia da build de produção
+npm run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🌐 Acesso
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **Desenvolvimento**: http://localhost:5173
+- **API User Service**: http://localhost:8081
+- **API Cars Service**: http://localhost:8080
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+## 👤 Usuários para teste
+
+### Vendedor
+
+- **Login**: vendedor@teste.com
+- **Senha**: 123456
+
+### Cliente
+
+- **Login**: cliente@teste.com
+- **Senha**: 123456
+
+## 📱 Funcionalidades
+
+### Área do Vendedor
+
+- ✅ Dashboard com estatísticas
+- ✅ Gerenciamento de usuários
+- ✅ Cadastro e edição de veículos
+- ✅ Visualização de vendas
+- ✅ Relatórios detalhados
+
+### Área do Cliente
+
+- ✅ Catálogo de veículos
+- ✅ Carrinho de compras
+- ✅ Finalização de compra
+- ✅ Desconto VIP automático
+
+## 🛠️ Scripts disponíveis
+
+- `npm run dev` - Servidor de desenvolvimento
+- `npm run build` - Build para produção
+- `npm run lint` - Verificação de código
+- `npm run preview` - Prévia da build
+
+## 📁 Estrutura
+
 ```
+src/
+├── components/     # Componentes reutilizáveis
+├── contexts/       # Context API (autenticação)
+├── pages/          # Páginas da aplicação
+├── services/       # Integração com APIs
+└── utils/          # Utilitários e temas
+```
+
+## 🔧 Configuração
+
+### Variáveis de ambiente
+
+Crie um arquivo `.env` na raiz do projeto:
+
+```env
+VITE_USER_SERVICE_URL=http://localhost:8081
+VITE_CARS_SERVICE_URL=http://localhost:8080
+```
+
+## 🎯 Compatibilidade
+
+- **Node.js**: 18+
+- **Navegadores**: Chrome, Firefox, Safari, Edge (versões modernas)
+- **Vite**: 4.5.14 (compatibilidade com Node.js 22)
