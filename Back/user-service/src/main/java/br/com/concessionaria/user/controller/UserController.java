@@ -12,94 +12,70 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * Controller responsável pelo gerenciamento de usuários da concessionária.
- * Fornece endpoints para operações CRUD (Create, Read, Update, Delete) de usuários.
- * Apenas usuários com perfil VENDEDOR podem acessar a maioria dos endpoints.
- */
 @RestController
-@RequestMapping("/users") // Define que todos os endpoints deste controller começam com /users
+@RequestMapping("/users")
 public class UserController {
-    
-    // Injeta automaticamente o serviço de usuários
     @Autowired
     private UserService userService;
 
-    /**
-     * Lista todos os usuários cadastrados no sistema.
-     * Endpoint: GET /users
-     * Acesso: Apenas usuários com perfil VENDEDOR
-     * 
-     * @return Lista de usuários com suas informações básicas
-     */
-    @PreAuthorize("hasAuthority('VENDEDOR')") // Apenas vendedores podem listar usuários
+    @PreAuthorize("hasAuthority('VENDEDOR')")
     @GetMapping
-    public ResponseEntity<List<UserListResponse>> listUsers() {
-        // Busca todos os usuários e converte para DTO de resposta
-        List<UserListResponse> users = userService.findAll().stream()
+    public List<UserListResponse> getAllUsers() {
+        return userService.findAll().stream()
                 .map(user -> new UserListResponse(
-                        user.getDocument(),  // CPF do usuário
-                        user.getName(),      // Nome completo
-                        user.getUsername(),  // Email de login
-                        user.getProfile().name(), // Perfil (VENDEDOR ou CLIENTE)
-                        user.getVip()        // Status VIP
+                        user.getDocument(),
+                        user.getName(),
+                        user.getUsername(),
+                        user.getProfile().name(),
+                        user.getVip()
                 ))
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(users);
     }
 
-    /**
-     * Cria um novo usuário no sistema.
-     * Endpoint: POST /users
-     * Acesso: Público (não requer autenticação)
-     * 
-     * @param request Dados do usuário a ser criado
-     * @return Dados do usuário criado
-     */
+    @PreAuthorize("hasAuthority('VENDEDOR')")
     @PostMapping
     public ResponseEntity<UserListResponse> createUser(@RequestBody CreateUserRequest request) {
-        // Cria um novo objeto User com os dados recebidos
+        if (request.getDocument() == null || request.getName() == null ||
+            request.getUsername() == null || request.getPassword() == null ||
+            request.getProfile() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (userService.findByDocument(request.getDocument()).isPresent()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (userService.findByUsername(request.getUsername()).isPresent()) {
+            return ResponseEntity.badRequest().build();
+        }
+
         User user = new User();
-        user.setDocument(request.getDocument());   // Define o CPF
-        user.setName(request.getName());           // Define o nome completo
-        user.setUsername(request.getUsername());   // Define o email de login
-        user.setPassword(request.getPassword());   // Define a senha (será criptografada automaticamente)
-        user.setProfile(User.Profile.valueOf(request.getProfile())); // Define o perfil (VENDEDOR ou CLIENTE)
-        user.setVip(request.getVip());             // Define o status VIP
-        
-        // Salva o usuário no banco de dados
-        User saved = userService.save(user);
-        
-        // Retorna os dados do usuário criado (sem a senha por segurança)
+        user.setDocument(request.getDocument());
+        user.setName(request.getName());
+        user.setUsername(request.getUsername());
+        user.setPassword(request.getPassword());
+        user.setProfile(User.Profile.valueOf(request.getProfile()));
+        user.setVip(request.getVip() != null ? request.getVip() : false);
+
+        User savedUser = userService.save(user);
+
         return ResponseEntity.ok(new UserListResponse(
-                saved.getDocument(),
-                saved.getName(),
-                saved.getUsername(),
-                saved.getProfile().name(),
-                saved.getVip()
+                savedUser.getDocument(),
+                savedUser.getName(),
+                savedUser.getUsername(),
+                savedUser.getProfile().name(),
+                savedUser.getVip()
         ));
     }
 
-    /**
-     * Busca um usuário específico pelo CPF.
-     * Endpoint: GET /users/{cpf}
-     * Acesso: Apenas usuários com perfil VENDEDOR
-     * 
-     * @param cpf CPF do usuário a ser buscado
-     * @return Dados do usuário encontrado ou 404 se não encontrado
-     */
-    @PreAuthorize("hasAuthority('VENDEDOR')") // Apenas vendedores podem buscar usuários específicos
+    @PreAuthorize("hasAuthority('VENDEDOR')")
     @GetMapping("/{cpf}")
     public ResponseEntity<UserListResponse> getUserByCpf(@PathVariable String cpf) {
-        // Busca o usuário pelo CPF
         Optional<User> userOpt = userService.findByDocument(cpf);
-        
-        // Se não encontrou o usuário, retorna erro 404
         if (userOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        
-        // Converte os dados do usuário para DTO de resposta
+
         User user = userOpt.get();
         return ResponseEntity.ok(new UserListResponse(
                 user.getDocument(),
@@ -110,44 +86,33 @@ public class UserController {
         ));
     }
 
-    /**
-     * Atualiza os dados de um usuário existente.
-     * Endpoint: PUT /users/{cpf}
-     * Acesso: Apenas usuários com perfil VENDEDOR
-     * 
-     * @param cpf CPF do usuário a ser atualizado
-     * @param request Novos dados do usuário (campos opcionais)
-     * @return Dados do usuário atualizado ou 404 se não encontrado
-     */
-    @PreAuthorize("hasAuthority('VENDEDOR')") // Apenas vendedores podem atualizar usuários
+    @PreAuthorize("hasAuthority('VENDEDOR')")
     @PutMapping("/{cpf}")
     public ResponseEntity<UserListResponse> updateUser(@PathVariable String cpf, @RequestBody UpdateUserRequest request) {
-        // Busca o usuário pelo CPF
         Optional<User> userOpt = userService.findByDocument(cpf);
         if (userOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        
-        // Atualiza apenas os campos que foram enviados na requisição
+
         User user = userOpt.get();
         if (request.getName() != null) {
-            user.setName(request.getName()); // Atualiza o nome se fornecido
+            user.setName(request.getName());
         }
         if (request.getUsername() != null) {
-            user.setUsername(request.getUsername()); // Atualiza o email se fornecido
+            user.setUsername(request.getUsername());
         }
         if (request.getProfile() != null) {
-            user.setProfile(User.Profile.valueOf(request.getProfile())); // Atualiza o perfil se fornecido
+            user.setProfile(User.Profile.valueOf(request.getProfile()));
         }
         if (request.getPassword() != null) {
-            user.setPassword(request.getPassword()); // Atualiza a senha se fornecida
+            user.setPassword(request.getPassword());
         }
         if (request.getVip() != null) {
-            user.setVip(request.getVip()); // Atualiza o status VIP se fornecido
+            user.setVip(request.getVip());
         }
-        
-        // Salva as alterações no banco de dados
+
         User updated = userService.save(user);
+
         return ResponseEntity.ok(new UserListResponse(
                 updated.getDocument(),
                 updated.getName(),
@@ -157,65 +122,43 @@ public class UserController {
         ));
     }
 
-    /**
-     * Remove um usuário do sistema.
-     * Endpoint: DELETE /users/{cpf}
-     * Acesso: Apenas usuários com perfil VENDEDOR
-     * 
-     * @param cpf CPF do usuário a ser removido
-     * @return Resposta vazia com status 204 (No Content) ou 404 se não encontrado
-     */
-    @PreAuthorize("hasAuthority('VENDEDOR')") // Apenas vendedores podem excluir usuários
+    @PreAuthorize("hasAuthority('VENDEDOR')")
     @DeleteMapping("/{cpf}")
     public ResponseEntity<Void> deleteUser(@PathVariable String cpf) {
-        // Busca o usuário pelo CPF
         Optional<User> userOpt = userService.findByDocument(cpf);
         if (userOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        
-        // Remove o usuário do banco de dados usando seu ID interno
+
         userService.deleteById(userOpt.get().getId());
-        return ResponseEntity.noContent().build(); // Retorna status 204 (No Content)
+        return ResponseEntity.noContent().build();
     }
 
-    /**
-     * DTO (Data Transfer Object) para resposta de listagem de usuários.
-     * Contém apenas as informações básicas que devem ser expostas publicamente.
-     */
     @Data
     public static class UserListResponse {
-        private final String document;  // CPF do usuário
-        private final String name;      // Nome completo
-        private final String username;  // Email de login
-        private final String profile;   // Perfil (VENDEDOR ou CLIENTE)
-        private final Boolean vip;      // Status VIP
+        private final String document;
+        private final String name;
+        private final String username;
+        private final String profile;
+        private final Boolean vip;
     }
 
-    /**
-     * DTO para criação de novos usuários.
-     * Contém todos os campos obrigatórios para criar um usuário.
-     */
     @Data
     public static class CreateUserRequest {
-        private String document;  // CPF do usuário (obrigatório)
-        private String name;      // Nome completo (obrigatório)
-        private String username;  // Email de login (obrigatório)
-        private String password;  // Senha (obrigatório)
-        private String profile;   // Perfil: "VENDEDOR" ou "CLIENTE" (obrigatório)
-        private Boolean vip;      // Status VIP (opcional, padrão false)
+        private String document;
+        private String name;
+        private String username;
+        private String password;
+        private String profile;
+        private Boolean vip;
     }
 
-    /**
-     * DTO para atualização de usuários existentes.
-     * Todos os campos são opcionais - apenas os fornecidos serão atualizados.
-     */
     @Data
     public static class UpdateUserRequest {
-        private String name;      // Nome completo (opcional)
-        private String username;  // Email de login (opcional)
-        private String password;  // Nova senha (opcional)
-        private String profile;   // Novo perfil: "VENDEDOR" ou "CLIENTE" (opcional)
-        private Boolean vip;      // Status VIP (opcional)
+        private String name;
+        private String username;
+        private String password;
+        private String profile;
+        private Boolean vip;
     }
 }

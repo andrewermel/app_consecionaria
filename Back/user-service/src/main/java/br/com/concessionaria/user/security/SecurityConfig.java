@@ -14,9 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-// Configuração de segurança do Spring Security
 @Configuration
-@EnableMethodSecurity // Habilita uso de @PreAuthorize nos controllers
+@EnableMethodSecurity
 public class SecurityConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -30,7 +29,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/login").permitAll()
-                .requestMatchers(HttpMethod.POST, "/users").permitAll() // Libera POST /users
+                .requestMatchers(HttpMethod.POST, "/users").permitAll()
                 .anyRequest().authenticated()
             )
             .userDetailsService(userDetailsService);

@@ -8,10 +8,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Configuração para popular o banco de dados com veículos iniciais.
- * Cria uma variedade de carros para demonstração e testes da aplicação.
- */
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
@@ -19,14 +15,9 @@ public class VehicleDataSeeder {
 
     private final VehicleRepository vehicleRepository;
 
-    /**
-     * Executa a criação de veículos iniciais na inicialização da aplicação.
-     * Só adiciona os dados se o banco estiver vazio para evitar duplicatas.
-     */
     @Bean
     public CommandLineRunner seedVehicleDatabase() {
         return args -> {
-            // Verifica se já existem veículos no banco
             if (vehicleRepository.count() == 0) {
                 log.info("=== Iniciando criação de veículos iniciais ===");
                 createInitialVehicles();
@@ -37,11 +28,7 @@ public class VehicleDataSeeder {
         };
     }
 
-    /**
-     * Cria os veículos iniciais do sistema.
-     */
     private void createInitialVehicles() {
-        // Carros populares - categoria econômica
         createVehicle(2023, 75000.00, "Branco", "Onix", true);
         createVehicle(2023, 73000.00, "Prata", "Onix", true);
         createVehicle(2022, 68000.00, "Vermelho", "Onix", true);
@@ -52,7 +39,6 @@ public class VehicleDataSeeder {
         createVehicle(2024, 92000.00, "Branco", "Argo", true);
         createVehicle(2023, 87000.00, "Cinza", "Argo", true);
 
-        // Carros médios - categoria intermediária
         createVehicle(2023, 135000.00, "Prata", "Corolla", true);
         createVehicle(2023, 138000.00, "Preto", "Corolla", true);
         createVehicle(2022, 128000.00, "Branco", "Corolla", true);
@@ -64,7 +50,6 @@ public class VehicleDataSeeder {
         createVehicle(2023, 125000.00, "Branco", "Sentra", true);
         createVehicle(2022, 118000.00, "Prata", "Sentra", true);
 
-        // SUVs - categoria utilitários
         createVehicle(2024, 185000.00, "Preto", "Compass", true);
         createVehicle(2023, 175000.00, "Branco", "Compass", true);
         createVehicle(2023, 178000.00, "Cinza", "Compass", true);
@@ -75,14 +60,12 @@ public class VehicleDataSeeder {
         createVehicle(2023, 165000.00, "Prata", "T-Cross", true);
         createVehicle(2024, 170000.00, "Preto", "T-Cross", true);
 
-        // Carros premium - categoria luxury
         createVehicle(2024, 285000.00, "Preto", "Camry", true);
         createVehicle(2023, 275000.00, "Prata", "Camry", true);
 
         createVehicle(2024, 320000.00, "Azul", "Accord", true);
         createVehicle(2023, 310000.00, "Branco", "Accord", true);
 
-        // Alguns carros já vendidos (para demonstrar filtros)
         createVehicle(2022, 125000.00, "Verde", "Corolla", false);
         createVehicle(2021, 115000.00, "Amarelo", "Civic", false);
         createVehicle(2022, 165000.00, "Roxo", "Compass", false);
@@ -92,9 +75,6 @@ public class VehicleDataSeeder {
         log.info("Veículos vendidos: {}", vehicleRepository.countByAvailableFalse());
     }
 
-    /**
-     * Método auxiliar para criar um veículo.
-     */
     private void createVehicle(Integer year, Double price, String color, String model, Boolean available) {
         Vehicle vehicle = new Vehicle();
         vehicle.setYear(year);

@@ -11,7 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
-// Controller responsável pela autenticação (login)
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -22,7 +21,6 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    // Endpoint para login
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         try {
@@ -38,14 +36,12 @@ public class AuthController {
         }
     }
 
-    // DTO para requisição de login
     @Data
     public static class AuthRequest {
         private String username;
         private String password;
     }
 
-    // DTO para resposta de login
     @Data
     public static class AuthResponse {
         private final String token;
